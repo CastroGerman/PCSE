@@ -1,7 +1,9 @@
 #ifndef MPU9250_H_
 #define MPU9250_H_
 
+#include <MPU9250_STM32F429ZI_port.h>
 #include <stdint.h>
+
 
 /*-------------------- MPU9250 Registers Defines --------------------*/
 
@@ -73,7 +75,12 @@
 #define MPU9250_FIFO_R_W	(116)
 #define MPU9250_WHOAMI	(117)
 
-
+#define MPU9250_MAGN_HXL	(3)
+#define MPU9250_MAGN_HXH	(4)
+#define MPU9250_MAGN_HYL	(5)
+#define MPU9250_MAGN_HYH	(6)
+#define MPU9250_MAGN_HZL	(7)
+#define MPU9250_MAGN_HZH	(8)
 
 /*-------------------- Vector Facilities --------------------*/
 
@@ -124,6 +131,7 @@ typedef struct MPU9250VT {
 struct MPU9250 {
 	const struct MPU9250VT *vptr; /* virtual pointer */
 	uint8_t devAddress;
+	I2CPort i2c;
 	Vector accel, gyro, magn;
 	uint8_t accelFs, gyroFs;
 };
@@ -141,6 +149,7 @@ void MPU9250_ctor (MPU9250 * const me);
 
 
 /*
+#define MAGN_SCALE		(0.15f)
 #define TEMP_SCALE      (1/340.00f)
 #define ACCEL_SCALE     (1/(16384.0f/(1<<(AFS_SEL))))
 #define GYRO_SCALE      (1/(131.072f/(1<<(FS_SEL))))
