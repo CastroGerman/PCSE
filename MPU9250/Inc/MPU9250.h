@@ -82,29 +82,28 @@
 #define MPU9250_MAGN_HZL	(7)
 #define MPU9250_MAGN_HZH	(8)
 
-/*-------------------- Vector Facilities --------------------*/
+/*-------------------- Vector3D Facilities --------------------*/
 
-typedef enum VectorSignal {
-	VECTOR_OK_SIG,
-	VECTOR_ERR_SIG
-}VectorSignal;
+typedef enum Vector3DSignal {
+	VECTOR3D_OK_SIG,
+	VECTOR3D_ERR_SIG
+}Vector3DSignal;
 
-typedef struct Vector Vector;
+typedef struct Vector3D Vector3D;
 
-typedef struct VectorVT {
-	VectorSignal (*set)(Vector * const me, uint16_t x, uint16_t y, uint16_t z);
-	VectorSignal (*get)(Vector * const me, uint16_t * x, uint16_t * y, uint16_t * z);
-}VectorVT;
+typedef struct Vector3DVT {
+	Vector3DSignal (*set)(Vector3D * const me, uint16_t x, uint16_t y, uint16_t z);
+	Vector3DSignal (*get)(Vector3D * const me, uint16_t * x, uint16_t * y, uint16_t * z);
+}Vector3DVT;
 
-struct Vector {
-	const struct VectorVT *vptr; /* virtual pointer */
+struct Vector3D {
+	const struct Vector3DVT *vptr; /* virtual pointer */
 	uint16_t x, y, z;
 };
 
-VectorSignal Vector_set (Vector * const me, uint16_t x, uint16_t y, uint16_t z);
-VectorSignal Vector_get (Vector * const me, uint16_t * x, uint16_t * y, uint16_t * z);
-void Vector_ctor (Vector * const me);
-
+Vector3DSignal Vector3D_set (Vector3D * const me, uint16_t x, uint16_t y, uint16_t z);
+Vector3DSignal Vector3D_get (Vector3D * const me, uint16_t * x, uint16_t * y, uint16_t * z);
+void Vector3D_ctor (Vector3D * const me, uint16_t x, uint16_t y, uint16_t z);
 
 /*-------------------- MPU9250 Facilities --------------------*/
 
@@ -131,9 +130,9 @@ typedef struct MPU9250VT {
 struct MPU9250 {
 	const struct MPU9250VT *vptr; /* virtual pointer */
 	uint8_t devAddress;
-	I2CPort i2c;
-	Vector accel, gyro, magn;
 	uint8_t accelFs, gyroFs;
+	Vector3D accel, gyro, magn; /* composition relationship */
+	I2CPort * i2c;		/* aggregation relationship */
 };
 
 MPU9250Signal MPU9250_setDeviceAddress (MPU9250 * const me, uint8_t devAddress);
@@ -145,7 +144,7 @@ MPU9250Signal MPU9250_setAccelFS (MPU9250 * const me, uint8_t accelFs);
 MPU9250Signal MPU9250_takeFullScaleRanges (MPU9250 * const me);
 MPU9250Signal MPU9250_takeMeasurements (MPU9250 * const me);
 MPU9250Signal MPU9250_setDefaultSettings (MPU9250 * const me);
-void MPU9250_ctor (MPU9250 * const me);
+void MPU9250_ctor (MPU9250 * const me, uint8_t devAddress, I2CPort * i2c);
 
 
 /*

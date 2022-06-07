@@ -36,6 +36,6 @@ I2CPortSignal I2CPort_masterWriteBytes (I2CPort * const me, uint8_t devAddress, 
 I2CPortSignal I2CPort_masterReadBytes (I2CPort * const me, uint8_t devAddress, uint8_t devRegister, uint8_t *rxData, uint16_t size);
 I2CPortSignal I2CPort_setInterface (I2CPort * const me, I2C_HandleTypeDef * const interface);
 I2CPortSignal I2CPort_getInterface (I2CPort * const me, I2C_HandleTypeDef * interface);
-void I2CPort_ctor (I2CPort * const me);
+void I2CPort_ctor (I2CPort * const me, I2C_HandleTypeDef * const interface);
 
 #endif /* MPU9250_PORT_H_ */

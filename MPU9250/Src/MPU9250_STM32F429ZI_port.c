@@ -29,7 +29,7 @@ I2CPortSignal I2CPort_getInterface (I2CPort * const me, I2C_HandleTypeDef * inte
 	return I2CPORT_OK_SIG;
 }
 
-void I2CPort_ctor (I2CPort * const me) {
+void I2CPort_ctor (I2CPort * const me, I2C_HandleTypeDef * const interface) {
 	static const I2CPortVT vTable = {
 			.masterReadBytes = &I2CPort_masterReadBytes,
 			.masterWriteBytes = &I2CPort_masterWriteBytes,
@@ -37,5 +37,5 @@ void I2CPort_ctor (I2CPort * const me) {
 			.getInterface = &I2CPort_getInterface
 	};
 	me->vptr = &vTable;
-	me->interface = NULL;
+	me->interface = interface;
 }
