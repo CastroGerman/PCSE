@@ -4,21 +4,21 @@
 
 /*-------------------- Vector3D Facilities --------------------*/
 
-Vector3DSignal Vector3D_set (Vector3D * const me, uint16_t x, uint16_t y, uint16_t z) {
+Vector3DSignal Vector3D_set (Vector3D * const me, int16_t x, int16_t y, int16_t z) {
 	me->x = x;
 	me->y = y;
 	me->z = z;
 	return VECTOR3D_OK_SIG;
 }
 
-Vector3DSignal Vector3D_get (Vector3D * const me, uint16_t * x, uint16_t * y, uint16_t * z) {
+Vector3DSignal Vector3D_get (Vector3D * const me, int16_t * x, int16_t * y, int16_t * z) {
 	if (x != NULL) *x = me->x;
 	if (y != NULL) *y = me->y;
 	if (z != NULL) *z = me->z;
 	return VECTOR3D_OK_SIG;
 }
 
-void Vector3D_ctor (Vector3D * const me, uint16_t x, uint16_t y, uint16_t z) {
+void Vector3D_ctor (Vector3D * const me, int16_t x, int16_t y, int16_t z) {
 	static const Vector3DVT vTable = {
 			.get = &Vector3D_get,
 			.set = &Vector3D_set
@@ -35,7 +35,7 @@ MPU9250Signal MPU9250_setDeviceAddress (MPU9250 * const me, uint8_t devAddress) 
 	return MPU9250_OK_SIG;
 }
 
-MPU9250Signal MPU9250_getRawMeasurements (MPU9250 * const me, uint16_t *ax, uint16_t *ay, uint16_t *az, uint16_t *gx, uint16_t *gy, uint16_t *gz, uint16_t *mx, uint16_t *my, uint16_t *mz) {
+MPU9250Signal MPU9250_getRawMeasurements (MPU9250 * const me, int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy, int16_t *gz, int16_t *mx, int16_t *my, int16_t *mz) {
 	(*me->vptr->takeMeasurements)(me);
 	if (ax != NULL) *ax = me->accel.x;
 	if (ay != NULL) *ay = me->accel.y;
@@ -54,28 +54,15 @@ MPU9250Signal MPU9250_getMeasurements (MPU9250 * const me, float *ax, float *ay,
 	float accelScale = (1/(16384.0f/(1<<(me->accelFs)))); /* Measured in: G force */
 	float gyroScale = (1/(131.072f/(1<<(me->gyroFs))));	/* Measured in: degrees/second */
 	float magnScale = (0.15f); /* Measured in: T */
-	if (ax != NULL) *ax = (float)((int16_t)me->accel.x - (int16_t)me->accelOffset.x) * accelScale;
-	if (ay != NULL) *ay = (float)((int16_t)me->accel.y - (int16_t)me->accelOffset.y) * accelScale;
-	if (az != NULL) *az = (float)((int16_t)me->accel.z - (int16_t)me->accelOffset.z) * accelScale;
-	if (gx != NULL) *gx = (float)((int16_t)me->gyro.x - (int16_t)me->gyroOffset.x) * gyroScale;
-	if (gy != NULL) *gy = (float)((int16_t)me->gyro.y - (int16_t)me->gyroOffset.y) * gyroScale;
-	if (gz != NULL) *gz = (float)((int16_t)me->gyro.z - (int16_t)me->gyroOffset.z) * gyroScale;
-	if (mx != NULL) *mx = (float)((int16_t)me->magn.x - (int16_t)me->magnOffset.x) * magnScale;
-	if (my != NULL) *my = (float)((int16_t)me->magn.y - (int16_t)me->magnOffset.y) * magnScale;
-	if (mz != NULL) *mz = (float)((int16_t)me->magn.z - (int16_t)me->magnOffset.z) * magnScale;
-
-	//    // Read gyro values and convert to Radians per second
-	//    _data->gx.cooked = ((double)_data->gx.raw - _data->gx.offset) * DEG_TO_RAD * GYRO_SCALE;
-	//    _data->gy.cooked = ((double)_data->gy.raw - _data->gy.offset) * DEG_TO_RAD * GYRO_SCALE;
-	//    _data->gz.cooked = ((double)_data->gz.raw - _data->gz.offset) * DEG_TO_RAD * GYRO_SCALE;
-	//    // As datasheet says:
-	//    // Temperature in degrees C = (TEMP_OUT Register Value as a signed quantity)/340 + 36.53
-	//    // As I say:
-	//    _data->temp.cooked = ((double)_data->temp.raw - _data->temp.offset) * TEMP_SCALE;
-	//    // Read accel values and convert to G force.
-	//    _data->ax.cooked = ((double)_data->ax.raw - _data->ax.offset) * ACCEL_SCALE;
-	//    _data->ay.cooked = ((double)_data->ay.raw - _data->ay.offset) * ACCEL_SCALE;
-	//    _data->az.cooked = ((double)_data->az.raw - _data->az.offset) * ACCEL_SCALE;
+	if (ax != NULL) *ax = (float)(me->accel.x - me->accelOffset.x) * accelScale;
+	if (ay != NULL) *ay = (float)(me->accel.y - me->accelOffset.y) * accelScale;
+	if (az != NULL) *az = (float)(me->accel.z - me->accelOffset.z) * accelScale;
+	if (gx != NULL) *gx = (float)(me->gyro.x - me->gyroOffset.x) * gyroScale;
+	if (gy != NULL) *gy = (float)(me->gyro.y - me->gyroOffset.y) * gyroScale;
+	if (gz != NULL) *gz = (float)(me->gyro.z - me->gyroOffset.z) * gyroScale;
+	if (mx != NULL) *mx = (float)(me->magn.x - me->magnOffset.x) * magnScale;
+	if (my != NULL) *my = (float)(me->magn.y - me->magnOffset.y) * magnScale;
+	if (mz != NULL) *mz = (float)(me->magn.z - me->magnOffset.z) * magnScale;
 	return MPU9250_OK_SIG;
 }
 
@@ -131,10 +118,10 @@ MPU9250Signal MPU9250_takeMeasurements (MPU9250 * const me) {
 	uint8_t rxBuf[6];
 
 	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_XOUT_H, rxBuf, 6) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
-	Vector3D_set(&me->accel, (uint16_t)(rxBuf[0]<<8 | rxBuf[1]), (uint16_t)(rxBuf[2]<<8 | rxBuf[3]), (uint16_t)(rxBuf[4]<<8 | rxBuf[5]));
+	Vector3D_set(&me->accel, (int16_t)(rxBuf[0]<<8 | rxBuf[1]), (int16_t)(rxBuf[2]<<8 | rxBuf[3]), (int16_t)(rxBuf[4]<<8 | rxBuf[5]));
 
 	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_XOUT_H, rxBuf, 6) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
-	Vector3D_set(&me->gyro, (uint16_t)(rxBuf[0]<<8 | rxBuf[1]), (uint16_t)(rxBuf[2]<<8 | rxBuf[3]), (uint16_t)(rxBuf[4]<<8 | rxBuf[5]));
+	Vector3D_set(&me->gyro, (int16_t)(rxBuf[0]<<8 | rxBuf[1]), (int16_t)(rxBuf[2]<<8 | rxBuf[3]), (int16_t)(rxBuf[4]<<8 | rxBuf[5]));
 
 	return MPU9250_OK_SIG;
 }
@@ -145,15 +132,15 @@ MPU9250Signal MPU9250_takeOffsets (MPU9250 * const me, uint16_t iterations) {
 	int32_t magnAccX = 0, magnAccY = 0, magnAccZ = 0;
 	for(uint16_t i = 0; i < iterations; ++i){
 		(*me->vptr->takeMeasurements)(me);
-		accelAccX += (int16_t)me->accel.x;
-		accelAccY += (int16_t)me->accel.y;
-		accelAccZ += (int16_t)me->accel.z;
-		gyroAccX += (int16_t)me->gyro.x;
-		gyroAccY += (int16_t)me->gyro.y;
-		gyroAccZ += (int16_t)me->gyro.z;
-		magnAccX += (int16_t)me->magn.x;
-		magnAccY += (int16_t)me->magn.y;
-		magnAccZ += (int16_t)me->magn.z;
+		accelAccX += me->accel.x;
+		accelAccY += me->accel.y;
+		accelAccZ += me->accel.z;
+		gyroAccX += me->gyro.x;
+		gyroAccY += me->gyro.y;
+		gyroAccZ += me->gyro.z;
+		magnAccX += me->magn.x;
+		magnAccY += me->magn.y;
+		magnAccZ += me->magn.z;
 	}
 	accelAccX /= iterations;
 	accelAccY /= iterations;
@@ -164,10 +151,11 @@ MPU9250Signal MPU9250_takeOffsets (MPU9250 * const me, uint16_t iterations) {
 	magnAccX /= iterations;
 	magnAccY /= iterations;
 	magnAccZ /= iterations;
-	(*me->accelOffset.vptr->set)(&me->accelOffset, (uint16_t)accelAccX, (uint16_t)accelAccY, (uint16_t)accelAccZ);
-	(*me->gyroOffset.vptr->set)(&me->gyroOffset, (uint16_t)gyroAccX, (uint16_t)gyroAccY, (uint16_t)gyroAccZ);
-	(*me->magnOffset.vptr->set)(&me->magnOffset, (uint16_t)magnAccX, (uint16_t)magnAccY, (uint16_t)magnAccZ);
+
 	/* takeGForceOff(); */
+	(*me->accelOffset.vptr->set)(&me->accelOffset, (int16_t)accelAccX, (int16_t)accelAccY, (int16_t)accelAccZ);
+	(*me->gyroOffset.vptr->set)(&me->gyroOffset, (int16_t)gyroAccX, (int16_t)gyroAccY, (int16_t)gyroAccZ);
+	(*me->magnOffset.vptr->set)(&me->magnOffset, (int16_t)magnAccX, (int16_t)magnAccY, (int16_t)magnAccZ);
 	return MPU9250_OK_SIG;
 }
 

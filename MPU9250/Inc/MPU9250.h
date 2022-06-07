@@ -92,18 +92,18 @@ typedef enum Vector3DSignal {
 typedef struct Vector3D Vector3D;
 
 typedef struct Vector3DVT {
-	Vector3DSignal (*set)(Vector3D * const me, uint16_t x, uint16_t y, uint16_t z);
-	Vector3DSignal (*get)(Vector3D * const me, uint16_t * x, uint16_t * y, uint16_t * z);
+	Vector3DSignal (*set)(Vector3D * const me, int16_t x, int16_t y, int16_t z);
+	Vector3DSignal (*get)(Vector3D * const me, int16_t * x, int16_t * y, int16_t * z);
 }Vector3DVT;
 
 struct Vector3D {
 	const struct Vector3DVT *vptr; /* virtual pointer */
-	uint16_t x, y, z;
+	int16_t x, y, z;
 };
 
-Vector3DSignal Vector3D_set (Vector3D * const me, uint16_t x, uint16_t y, uint16_t z);
-Vector3DSignal Vector3D_get (Vector3D * const me, uint16_t * x, uint16_t * y, uint16_t * z);
-void Vector3D_ctor (Vector3D * const me, uint16_t x, uint16_t y, uint16_t z);
+Vector3DSignal Vector3D_set (Vector3D * const me, int16_t x, int16_t y, int16_t z);
+Vector3DSignal Vector3D_get (Vector3D * const me, int16_t * x, int16_t * y, int16_t * z);
+void Vector3D_ctor (Vector3D * const me, int16_t x, int16_t y, int16_t z);
 
 /*-------------------- MPU9250 Facilities --------------------*/
 
@@ -117,7 +117,7 @@ typedef struct MPU9250 MPU9250;
 
 typedef struct MPU9250VT {
 	MPU9250Signal (*setDeviceAddress)(MPU9250 * const me, uint8_t devAddress);
-	MPU9250Signal (*getRawMeasurements)(MPU9250 * const me, uint16_t *ax, uint16_t *ay, uint16_t *az, uint16_t *gx, uint16_t *gy, uint16_t *gz, uint16_t *mx, uint16_t *my, uint16_t *mz);
+	MPU9250Signal (*getRawMeasurements)(MPU9250 * const me, int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy, int16_t *gz, int16_t *mx, int16_t *my, int16_t *mz);
 	MPU9250Signal (*getMeasurements)(MPU9250 * const me, float *ax, float *ay, float *az, float *gx, float *gy, float *gz, float *mx, float *my, float *mz);
 	MPU9250Signal (*takeGyroFS)(MPU9250 * const me);
 	MPU9250Signal (*takeAccelFS)(MPU9250 * const me);
@@ -139,7 +139,7 @@ struct MPU9250 {
 };
 
 MPU9250Signal MPU9250_setDeviceAddress (MPU9250 * const me, uint8_t devAddress);
-MPU9250Signal MPU9250_getRawMeasurements (MPU9250 * const me, uint16_t *ax, uint16_t *ay, uint16_t *az, uint16_t *gx, uint16_t *gy, uint16_t *gz, uint16_t *mx, uint16_t *my, uint16_t *mz);
+MPU9250Signal MPU9250_getRawMeasurements (MPU9250 * const me, int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy, int16_t *gz, int16_t *mx, int16_t *my, int16_t *mz);
 MPU9250Signal MPU9250_getMeasurements (MPU9250 * const me, float *ax, float *ay, float *az, float *gx, float *gy, float *gz, float *mx, float *my, float *mz);
 MPU9250Signal MPU9250_takeGyroFS (MPU9250 * const me);
 MPU9250Signal MPU9250_takeAccelFS (MPU9250 * const me);
