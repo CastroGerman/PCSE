@@ -118,12 +118,14 @@ typedef struct MPU9250 MPU9250;
 typedef struct MPU9250VT {
 	MPU9250Signal (*setDeviceAddress)(MPU9250 * const me, uint8_t devAddress);
 	MPU9250Signal (*getRawMeasurements)(MPU9250 * const me, uint16_t *ax, uint16_t *ay, uint16_t *az, uint16_t *gx, uint16_t *gy, uint16_t *gz, uint16_t *mx, uint16_t *my, uint16_t *mz);
+	MPU9250Signal (*getMeasurements)(MPU9250 * const me, float *ax, float *ay, float *az, float *gx, float *gy, float *gz, float *mx, float *my, float *mz);
 	MPU9250Signal (*takeGyroFS)(MPU9250 * const me);
 	MPU9250Signal (*takeAccelFS)(MPU9250 * const me);
 	MPU9250Signal (*setGyroFS)(MPU9250 * const me, uint8_t gyroFs);
 	MPU9250Signal (*setAccelFS)(MPU9250 * const me, uint8_t accelFs);
 	MPU9250Signal (*takeFullScaleRanges)(MPU9250 * const me);
 	MPU9250Signal (*takeMeasurements)(MPU9250 * const me);
+	MPU9250Signal (*takeOffset)(MPU9250 * const me, uint16_t iterations);
 	MPU9250Signal (*setDefaultSettings)(MPU9250 * const me);
 }MPU9250VT;
 
@@ -132,17 +134,20 @@ struct MPU9250 {
 	uint8_t devAddress;
 	uint8_t accelFs, gyroFs;
 	Vector3D accel, gyro, magn; /* composition relationship */
+	Vector3D accelOffset, gyroOffset, magnOffset;
 	I2CPort * i2c;		/* aggregation relationship */
 };
 
 MPU9250Signal MPU9250_setDeviceAddress (MPU9250 * const me, uint8_t devAddress);
 MPU9250Signal MPU9250_getRawMeasurements (MPU9250 * const me, uint16_t *ax, uint16_t *ay, uint16_t *az, uint16_t *gx, uint16_t *gy, uint16_t *gz, uint16_t *mx, uint16_t *my, uint16_t *mz);
+MPU9250Signal MPU9250_getMeasurements (MPU9250 * const me, float *ax, float *ay, float *az, float *gx, float *gy, float *gz, float *mx, float *my, float *mz);
 MPU9250Signal MPU9250_takeGyroFS (MPU9250 * const me);
 MPU9250Signal MPU9250_takeAccelFS (MPU9250 * const me);
 MPU9250Signal MPU9250_setGyroFS (MPU9250 * const me, uint8_t gyroFs);
 MPU9250Signal MPU9250_setAccelFS (MPU9250 * const me, uint8_t accelFs);
 MPU9250Signal MPU9250_takeFullScaleRanges (MPU9250 * const me);
 MPU9250Signal MPU9250_takeMeasurements (MPU9250 * const me);
+MPU9250Signal MPU9250_takeOffsets (MPU9250 * const me, uint16_t iterations);
 MPU9250Signal MPU9250_setDefaultSettings (MPU9250 * const me);
 void MPU9250_ctor (MPU9250 * const me, uint8_t devAddress, I2CPort * i2c);
 
