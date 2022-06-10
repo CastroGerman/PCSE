@@ -68,14 +68,14 @@ MPU9250Signal MPU9250_getMeasurements (MPU9250 * const me, float *ax, float *ay,
 
 MPU9250Signal MPU9250_takeGyroFS (MPU9250 * const me) {
 	uint8_t data;
-	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_CONFIG, &data, 1) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
+	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_CONFIG, &data, 1) != I2CPORT_OK_SIG) return MPU9250_ERR_SIG;
 	me->gyroFs = (data>>3) & 0x3;
 	return MPU9250_OK_SIG;
 }
 
 MPU9250Signal MPU9250_takeAccelFS (MPU9250 * const me) {
 	uint8_t data;
-	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_CONFIG, &data, 1) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
+	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_CONFIG, &data, 1) != I2CPORT_OK_SIG) return MPU9250_ERR_SIG;
 	me->accelFs = (data>>3) & 0x3;
 	return MPU9250_OK_SIG;
 }
@@ -83,10 +83,10 @@ MPU9250Signal MPU9250_takeAccelFS (MPU9250 * const me) {
 MPU9250Signal MPU9250_setGyroFS (MPU9250 * const me, uint8_t gyroFs) {
 	if (gyroFs > 3) return MPU9250_INVALID_PARAM_SIG;
 	uint8_t data;
-	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_CONFIG, &data, 1) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
+	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_CONFIG, &data, 1) != I2CPORT_OK_SIG) return MPU9250_ERR_SIG;
 	data &=~(0x3 << 3);
 	data |= (gyroFs << 3);
-	if ((int)I2CPort_masterWriteBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_CONFIG, &data, 1) != MPU9250_OK_SIG) {
+	if ((int)I2CPort_masterWriteBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_CONFIG, &data, 1) != I2CPORT_OK_SIG) {
 		return MPU9250_ERR_SIG;
 	} else {
 		me->gyroFs = gyroFs;
@@ -97,10 +97,10 @@ MPU9250Signal MPU9250_setGyroFS (MPU9250 * const me, uint8_t gyroFs) {
 MPU9250Signal MPU9250_setAccelFS (MPU9250 * const me, uint8_t accelFs) {
 	if (accelFs > 3) return MPU9250_INVALID_PARAM_SIG;
 	uint8_t data;
-	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_CONFIG, &data, 1) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
+	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_CONFIG, &data, 1) != I2CPORT_OK_SIG) return MPU9250_ERR_SIG;
 	data &=~(0x3 << 3);
 	data |= (accelFs << 3);
-	if ((int)I2CPort_masterWriteBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_CONFIG, &data, 1) != MPU9250_OK_SIG) {
+	if ((int)I2CPort_masterWriteBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_CONFIG, &data, 1) != I2CPORT_OK_SIG) {
 		return MPU9250_ERR_SIG;
 	} else {
 		me->accelFs = accelFs;
@@ -117,10 +117,10 @@ MPU9250Signal MPU9250_takeFullScaleRanges (MPU9250 * const me) {
 MPU9250Signal MPU9250_takeMeasurements (MPU9250 * const me) {
 	uint8_t rxBuf[6];
 
-	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_XOUT_H, rxBuf, 6) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
+	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_ACCEL_XOUT_H, rxBuf, 6) != I2CPORT_OK_SIG) return MPU9250_ERR_SIG;
 	Vector3D_set(&me->accel, (int16_t)(rxBuf[0]<<8 | rxBuf[1]), (int16_t)(rxBuf[2]<<8 | rxBuf[3]), (int16_t)(rxBuf[4]<<8 | rxBuf[5]));
 
-	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_XOUT_H, rxBuf, 6) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
+	if ((int)I2CPort_masterReadBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_GYRO_XOUT_H, rxBuf, 6) != I2CPORT_OK_SIG) return MPU9250_ERR_SIG;
 	Vector3D_set(&me->gyro, (int16_t)(rxBuf[0]<<8 | rxBuf[1]), (int16_t)(rxBuf[2]<<8 | rxBuf[3]), (int16_t)(rxBuf[4]<<8 | rxBuf[5]));
 
 	return MPU9250_OK_SIG;
@@ -161,7 +161,7 @@ MPU9250Signal MPU9250_takeOffsets (MPU9250 * const me, uint16_t iterations) {
 
 MPU9250Signal MPU9250_setDefaultSettings (MPU9250 * const me) {
 	uint8_t data = 0x80;
-	if ((int)I2CPort_masterWriteBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_PWR_MGMT_1, &data, 1) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
+	if ((int)I2CPort_masterWriteBytes(me->i2c, me->devAddress, (uint8_t)MPU9250_PWR_MGMT_1, &data, 1) != I2CPORT_OK_SIG) return MPU9250_ERR_SIG;
 	if (MPU9250_takeFullScaleRanges(me) != MPU9250_OK_SIG) return MPU9250_ERR_SIG;
 	return MPU9250_OK_SIG;
 }
